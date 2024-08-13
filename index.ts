@@ -4,6 +4,7 @@ import { connectDb } from "./Server/services/db";
 import { initServer } from "./Server/services/server";
 import { ICommentEntity } from "@Shared/types";
 import ShopAPI from "./Shop.API";
+import ShopAdmin from "./Shop.Admin";
 
 export let server: Express;
 export let client: ICommentEntity | null;
@@ -18,6 +19,9 @@ async function launchApplication() {
 function initRouter() {
     const shopApi = ShopAPI(client);
     server.use("/api", shopApi);
+
+    const shopAdmin = ShopAdmin();
+    server.use("/admin", shopAdmin);
 
     server.use("/", (_, res) => {
         res.send("React App");
