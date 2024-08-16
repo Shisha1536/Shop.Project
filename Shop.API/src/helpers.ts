@@ -49,7 +49,7 @@ export const checkCommentUniq = (payload: CommentCreatePayload, comments: IComme
 	);
 }
 export const enhanceProductsComments = (products, commentRows, imagesRows) => {
-
+	
 	for (let index = 0; index < products.length; index++) {
 		const product = products[index];
 		let new_arr_com = [];
@@ -84,7 +84,6 @@ export const enhanceProductsComments = (products, commentRows, imagesRows) => {
 			thumbnail = [];
 		}
 	}
-
 	return products;
 }
 export const getProductsFilterQuery = (
@@ -114,7 +113,7 @@ export const getProductsFilterQuery = (
 			query += " OR ";
 		}
 
-		query += `(price > ${priceFrom} AND price < ${priceTo})`;
+		query += `(price > ${priceFrom || 0} AND price < ${priceTo || 999999})`;
 		values.push(priceFrom || 0);
 		values.push(priceTo || 999999);
 	}

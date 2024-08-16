@@ -5,6 +5,7 @@ import { IProductSearchFilter, ProductCreatePayload } from "../../types";
 import { v4 as uuidv4 } from 'uuid';
 import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY } from "../services/queries";
 
+
 export const productsRouter = Router();
 
 const throwServerError = (res: Response, e: Error) => {
@@ -115,14 +116,43 @@ productsRouter.post('/', async (req: Request<{}, {}, ProductCreatePayload>, res:
         throwServerError(res, e);
     }
 });
+
+productsRouter.post('/remove-images', async (
+    req: Request<{}, {}>,
+    res: Response
+  ) => {
+    try {
+        const imagesToRemoveId = req.body;
+       
+        if (imagesToRemoveId.length > 1) {
+            for (let index = 0; index < imagesToRemoveId.length; index++) {
+                const element = imagesToRemoveId[index];
+                const info = await client.query("DELETE FROM images WHERE image_id = $1", [element]);
+            }
+        }
+        const info = await client.query("DELETE FROM images WHERE image_id = $1", imagesToRemoveId);
+
+        if (info.rows.affectedRows === 0) {
+        res.status(404);
+        res.send("No one image has been removed");
+        return;
+        }
+
+        res.status(200);
+        res.send(`Images have been removed!`);
+    } catch (e) {
+        throwServerError(res, e);
+    }
+  });
+
 productsRouter.post('/:id', async (req: Request, res: Response) => {
     try {
+        
         const { url, main, images } = req.body;
         
         if (images?.length) {
             for (let index = 0; index < images.length; index++) {
                 const element = images[index];
-                console.log(element)
                 let img = await client.query(
                     "DELETE FROM images WHERE image_id = $1",
                     [element]
@@ -167,3 +197,4 @@ productsRouter.delete('/:id', async (req: Request<{ id: string }>, res: Response
         throwServerError(res, e);
     }
 });
+

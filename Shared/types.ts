@@ -32,10 +32,19 @@ export interface IProduct {
 export interface IProductEntity extends IProduct, RowDataPacket {
  	product_id: string;
 }
-export interface IProductSearchFilter {
+export interface IProductFilterPayload {
 	title?: string;
 	description?: string;
 	priceFrom?: number;
 	priceTo?: number;
 }
 export type ProductCreatePayload = Omit<IProduct, "id" | "comments">;
+export interface IProductEditData {
+    title: string;
+    description: string;
+    price: string;
+    mainImage: string;
+    newImages?: string;
+    commentsToRemove: string | string[];
+    imagesToRemove: string | string[];
+}
