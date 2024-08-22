@@ -3,8 +3,8 @@ import { Express } from "express";
 import { connectDb } from "./Server/services/db";
 import { initServer } from "./Server/services/server";
 import { ICommentEntity } from "@Shared/types";
-import ShopAPI from "./Shop.API";
-import ShopAdmin from "./Shop.Admin";
+import API from "./Shop.API";
+import ADMIN from "./Shop.Admin";
 
 export let server: Express;
 export let client: ICommentEntity | null;
@@ -17,11 +17,11 @@ async function launchApplication() {
     initRouter();
 }
 function initRouter() {
-    const shopApi = ShopAPI(client);
-    server.use("/api", shopApi);
+    const Api = API(client);
+    server.use("/api", Api);
 
-    const shopAdmin = ShopAdmin();
-    server.use("/admin", shopAdmin);
+    const Admin = ADMIN();
+    server.use("/admin", Admin);
 
     server.use("/", (_, res) => {
         res.send("React App");
