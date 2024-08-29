@@ -3,10 +3,12 @@ import { getProduct, getProducts, removeProduct, searchProducts, updateProduct }
 import { IProductEditData, IProductFilterPayload } from "@Shared/types";
 import { throwServerError } from "../helper";
 
+
 export const productsRouter = Router();
 
 productsRouter.get('/', async (req: Request, res: Response) => {
     try {
+        
         const products = await getProducts();
         res.render("products", {
             items: products,

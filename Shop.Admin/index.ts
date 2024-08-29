@@ -3,9 +3,17 @@ import { productsRouter } from "./controllers/products.controller";
 import layouts from "express-ejs-layouts";
 import bodyParser from "body-parser";
 import { authRouter } from "./controllers/auth.controller";
+import session from "express-session";
 
 export default function (): Express {
     const app = express();
+
+    app.use(session({
+        secret: "abcde",
+        saveUninitialized: false,
+        resave: false
+    }));
+
     app.use(express.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
