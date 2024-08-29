@@ -1,14 +1,9 @@
 import { Router, Request, Response } from "express";
 import { getProduct, getProducts, removeProduct, searchProducts, updateProduct } from "../models/products.model";
 import { IProductEditData, IProductFilterPayload } from "@Shared/types";
+import { throwServerError } from "../helper";
 
 export const productsRouter = Router();
-
-const throwServerError = (res: Response, e: Error) => {
-    console.debug(e.message);
-    res.status(500);
-    res.send("Something went wrong");
-}
 
 productsRouter.get('/', async (req: Request, res: Response) => {
     try {
@@ -21,7 +16,6 @@ productsRouter.get('/', async (req: Request, res: Response) => {
         throwServerError(res, e);
     }
 });
-
 productsRouter.get('/search', async (
     req: Request<{}, {}, {}, IProductFilterPayload>,
     res: Response

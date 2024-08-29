@@ -1,4 +1,4 @@
-import { IComment, IProduct } from "@Shared/types";
+import { IAuthRequisites, IComment, IProduct } from "@Shared/types";
 
 declare interface RowDataPacket {
     constructor: {
@@ -26,3 +26,6 @@ export interface IProductSearchFilter {
 	priceTo?: number;
 }
 export type ProductCreatePayload = Omit<IProduct, "id" | "comments">;
+export interface IUserRequisitesEntity extends IAuthRequisites, RowDataPacket {
+  id: number;
+}   

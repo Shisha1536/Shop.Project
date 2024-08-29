@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { client } from "../../index";
-import { enhanceProductsComments, getProductsFilterQuery, queryImg } from "../helpers";
+import { enhanceProductsComments, getProductsFilterQuery, queryImg } from "../../helpers";
 import { IProductEntity, IProductSearchFilter, ProductCreatePayload } from "../../types";
 import { v4 as uuidv4 } from 'uuid';
 import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY, REPLACE_PRODUCT_THUMBNAIL, UPDATE_PRODUCT_FIELDS } from "../services/queries";

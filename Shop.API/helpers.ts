@@ -1,4 +1,4 @@
-import { CommentCreatePayload, IProductSearchFilter } from "../types";
+import { CommentCreatePayload, IProductSearchFilter } from "./types";
 import { IComment } from "@Shared/types";
 import { v4 as uuidv4 } from 'uuid';
 

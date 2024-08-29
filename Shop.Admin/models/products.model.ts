@@ -1,8 +1,6 @@
 import axios from "axios";
 import { IProduct, IProductEditData, IProductFilterPayload } from "@Shared/types";
-import { log } from "console";
-
-const host = `http://${process.env.LOCAL_HOST}:${process.env.LOCAL_PORT}/${process.env.API_PATH}`;
+import { API_HOST as host } from "./const";
 
 export async function getProducts() {
     const { data } = await axios.get < IProduct[] > (`${host}/products`);
@@ -32,7 +30,6 @@ export async function getProduct(
 export async function removeProduct(id: string): Promise<void> {
     await axios.delete(`${host}/products/${id}`);
 }
-
 function compileIdsToRemove(data: string | string[]): string[] {
     if (typeof data === "string") return [data];
     return data;
@@ -44,7 +41,6 @@ function ingNew(data: string | string[]): string[] {
         return data = data.split(',');
     };
 }
-
 export async function updateProduct(
     productId: string,
     formData: IProductEditData
@@ -87,6 +83,6 @@ export async function updateProduct(
         });
         return currentProduct;
     } catch (e) {
-        console.log(e); // фиксируем ошибки, которые могли возникнуть в процессе
+        console.log(e);
     }
 }

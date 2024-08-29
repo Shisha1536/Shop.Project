@@ -54,3 +54,7 @@ export interface IProductNewImages {
 	image: string | string[];
 	product_id: string;
 }
+export interface IAuthRequisites {
+    username: string;
+    password: string;
+}   

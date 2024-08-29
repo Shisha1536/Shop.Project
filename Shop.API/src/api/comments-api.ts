@@ -2,7 +2,7 @@ import { Request, Response, Router  } from 'express';
 import { CommentCreatePayload, ICommentEntity } from "../../types";
 import { IComment } from '@Shared/types';
 import { readFile, writeFile } from "fs/promises";
-import { validateComment } from "../helpers";
+import { validateComment } from "../../helpers";
 import { v4 as uuidv4 } from 'uuid';
 import { client } from "../../index";
 import { mapCommentEntity } from '../services/mapping';
