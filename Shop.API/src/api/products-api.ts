@@ -3,7 +3,7 @@ import { client } from "../../index";
 import { enhanceProductsComments, getProductsFilterQuery, queryImg } from "../helpers";
 import { IProductEntity, IProductSearchFilter, ProductCreatePayload } from "../../types";
 import { v4 as uuidv4 } from 'uuid';
-import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY, REPLACE_PRODUCT_THUMBNAIL } from "../services/queries";
+import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY, REPLACE_PRODUCT_THUMBNAIL, UPDATE_PRODUCT_FIELDS } from "../services/queries";
 import { IProductNewImages } from "@Shared/types";
 
 export const productsRouter = Router();
@@ -199,17 +199,38 @@ productsRouter.post('/:id', async (req: Request, res: Response) => {
         throwServerError(res, e);
     }
 });
-productsRouter.patch('/:id', async (req: Request, res: Response) => {
+productsRouter.patch('/:id', async (
+    req: Request<{ id: string }, {}, ProductCreatePayload>,
+    res: Response
+  ) => {
     try {
-        const { title, description, price } = req.body;
-        console.log([ title, description, price, req.params.id])
-        await client.query(
-            INSERT_PRODUCT_QUERY,
-            [ title, description, price, req.params.id]
+        const { id } = req.params;
+    
+        const rows = await client.query(
+            "SELECT * FROM products WHERE product_id = $1",
+            [id]
         );
-
-        res.status(200);
-        res.send(`Product id:${req.params.id} has been added!`);
+       
+        if (!rows.rows?.[0]) {
+            res.status(404);
+            res.send(`Product with id ${id} is not found`);
+            return;
+        }
+    
+        const currentProduct = rows.rows[0];
+    
+        await client.query(
+            UPDATE_PRODUCT_FIELDS,
+            [
+            req.body.hasOwnProperty("title") ? req.body.title : currentProduct.title,
+            req.body.hasOwnProperty("description") ? req.body.description : currentProduct.description,
+            req.body.hasOwnProperty("price") ? req.body.price : currentProduct.price,
+            id
+            ]
+      );
+  
+      res.status(200);
+      res.send(`Product id:${id} has been added!`);
     } catch (e) {
         throwServerError(res, e);
     }

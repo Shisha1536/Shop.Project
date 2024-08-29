@@ -85,7 +85,6 @@ export async function updateProduct(
             description: formData.description,
             price: Number(formData.price)
         });
-
         return currentProduct;
     } catch (e) {
         console.log(e); // фиксируем ошибки, которые могли возникнуть в процессе
