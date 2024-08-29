@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import { client } from "../../index";
 import { enhanceProductsComments, getProductsFilterQuery, queryImg } from "../helpers";
-import { IProductSearchFilter, ProductCreatePayload } from "../../types";
+import { IProductEntity, IProductSearchFilter, ProductCreatePayload } from "../../types";
 import { v4 as uuidv4 } from 'uuid';
-import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY } from "../services/queries";
-
+import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY, REPLACE_PRODUCT_THUMBNAIL } from "../services/queries";
+import { IProductNewImages } from "@Shared/types";
 
 export const productsRouter = Router();
 
@@ -116,7 +116,36 @@ productsRouter.post('/', async (req: Request<{}, {}, ProductCreatePayload>, res:
         throwServerError(res, e);
     }
 });
+productsRouter.post('/new-image', async (req: Request<{}, {}, IProductNewImages>, res: Response) => {
+    const image = req.body[0];
+    const product_id = req.body[1];
+    try {
+        let queryIMG = queryImg(INSERT_IMAGES_QUERY, image, product_id);
+        await client.query(queryIMG)
 
+        res.status(201);
+        res.send(`Product id:${product_id} has been added!`);
+    } catch (e) {
+        throwServerError(res, e);
+    }
+    
+});
+productsRouter.post('/update-thumbnail', async (req: Request, res: Response) =>{
+    try{
+        const info = await client.query(REPLACE_PRODUCT_THUMBNAIL, req.body)
+
+        if (info.rows.affectedRows === 0) {
+            res.status(404);
+            res.send("No images were found");
+            return;
+        }
+
+        res.status(200);
+        res.send(`The cover has been changed`);
+    } catch (e) {
+        throwServerError(res, e);
+    }
+})
 productsRouter.post('/remove-images', async (
     req: Request<{}, {}>,
     res: Response
@@ -143,8 +172,7 @@ productsRouter.post('/remove-images', async (
     } catch (e) {
         throwServerError(res, e);
     }
-  });
-
+});
 productsRouter.post('/:id', async (req: Request, res: Response) => {
     try {
         
@@ -167,6 +195,21 @@ productsRouter.post('/:id', async (req: Request, res: Response) => {
             res.status(201);
             res.send(`Product id:${id} has been added!`);
         }
+    } catch (e) {
+        throwServerError(res, e);
+    }
+});
+productsRouter.patch('/:id', async (req: Request, res: Response) => {
+    try {
+        const { title, description, price } = req.body;
+        console.log([ title, description, price, req.params.id])
+        await client.query(
+            INSERT_PRODUCT_QUERY,
+            [ title, description, price, req.params.id]
+        );
+
+        res.status(200);
+        res.send(`Product id:${req.params.id} has been added!`);
     } catch (e) {
         throwServerError(res, e);
     }

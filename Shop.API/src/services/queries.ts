@@ -29,3 +29,17 @@ export const INSERT_IMAGE_QUERY = `
 	VALUES
 	($1, $2, $3, $4)
 `;
+export const REPLACE_PRODUCT_THUMBNAIL = `
+UPDATE images
+SET main = CASE
+  WHEN image_id = $1 THEN true
+  WHEN image_id = $2 THEN false
+  ELSE main
+END
+WHERE image_id IN ($3, $4)
+`;
+export const UPDATE_PRODUCT_FIELDS = `
+    UPDATE products 
+    SET title = $1, description = $2, price = $3
+    WHERE product_id = $4
+`;

@@ -27,7 +27,8 @@ export interface IProduct {
 	description: string;
 	price: number;
 	comments?: IComment[];
-	images?: []
+	images?: [];
+    thumbnail?: {};
 }
 export interface IProductEntity extends IProduct, RowDataPacket {
  	product_id: string;
@@ -47,4 +48,9 @@ export interface IProductEditData {
     newImages?: string;
     commentsToRemove: string | string[];
     imagesToRemove: string | string[];
+    product_id: string;
+}
+export interface IProductNewImages {
+	image: string | string[];
+	product_id: string;
 }
