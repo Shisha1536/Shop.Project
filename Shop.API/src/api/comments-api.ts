@@ -1,25 +1,13 @@
 import { Request, Response, Router  } from 'express';
 import { CommentCreatePayload, ICommentEntity } from "../../types";
 import { IComment } from '@Shared/types';
-import { readFile, writeFile } from "fs/promises";
+import { param, validationResult } from "express-validator";
 import { validateComment } from "../../helpers";
 import { v4 as uuidv4 } from 'uuid';
 import { client } from "../../index";
 import { mapCommentEntity } from '../services/mapping';
 import { COMMENT_DUPLICATE_QUERY, INSERT_COMMENT_QUERY } from "../services/queries";
 
-const loadComments = async (): Promise<IComment[]> => {
-  const rawData = await readFile("mock-comments.json", "binary");
-  return JSON.parse(rawData.toString());
-}
-const saveComments = async (data: IComment[]): Promise<boolean> => {
-  try {
-    await writeFile("mock-comments.json", JSON.stringify(data));
-    return false;
-  } catch (e) {
-    return false;
-  }
-}
 export const commentsRouter = Router();
 
 commentsRouter.get('/', async (req: Request, res: Response) => {
@@ -35,8 +23,15 @@ commentsRouter.get('/', async (req: Request, res: Response) => {
 	}
 });
 
-commentsRouter.get('/:id', async (req: Request<{id: string}>, res: Response) => {
+commentsRouter.get('/:id', [param('id').isUUID().withMessage('Comment id is not UUID')], async (req: Request<{id: string}>, res: Response) => {
 	try {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			res.status(400);
+			res.json({ errors: errors.array() });
+			return;
+		}
+
 		const rows = await client.query(
 		  "SELECT * FROM comments WHERE comment_id = $1",
 		  [req.params.id]

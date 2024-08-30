@@ -7,8 +7,9 @@
     </head>
 
     <body>
-        <header class="headet">
+        <header class="header">
             <div class="logo"></div>
+            <a class="logout" href="<%= `/${process.env.ADMIN_PATH}/auth/logout` %>">Выход</a>
         </header>
         <div class="container">
             <%- body %>

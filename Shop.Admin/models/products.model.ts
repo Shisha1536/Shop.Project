@@ -1,7 +1,6 @@
 import axios from "axios";
 import { IProduct, IProductEditData, IProductFilterPayload } from "@Shared/types";
 import { API_HOST as host } from "./const";
-
 export async function getProducts() {
     const { data } = await axios.get < IProduct[] > (`${host}/products`);
     return data || [];
@@ -73,7 +72,7 @@ export async function updateProduct(
         if (formData.mainImage !== currentProduct[0]?.thumbnail?.image_id) {
             const old_man = currentProduct[0]?.thumbnail?.image_id;
             const new_main = formData.mainImage;
-            await axios.post(`${host}/products/update-thumbnail`, [new_main, old_man, new_main, old_man]);
+            await axios.post(`${host}/products/update-thumbnail/${productId}`, [new_main, old_man, new_main, old_man]);
         }
         
         await axios.patch(`${host}/products/${productId}`, {

@@ -3,7 +3,6 @@ import { getProduct, getProducts, removeProduct, searchProducts, updateProduct }
 import { IProductEditData, IProductFilterPayload } from "@Shared/types";
 import { throwServerError } from "../helper";
 
-
 export const productsRouter = Router();
 
 productsRouter.get('/', async (req: Request, res: Response) => {
@@ -57,6 +56,12 @@ productsRouter.get('/remove-product/:id', async (
     res: Response
 ) => {
     try {
+        if (req.session.username !== "admin") {
+            res.status(403);
+            res.send("Forbidden");
+            return;
+        }
+
         await removeProduct(req.params.id);
         res.redirect(`/${process.env.ADMIN_PATH}`);
     } catch (e) {

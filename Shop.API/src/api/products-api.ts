@@ -1,8 +1,9 @@
 import { Request, Response, Router } from "express";
 import { client } from "../../index";
 import { enhanceProductsComments, getProductsFilterQuery, queryImg } from "../../helpers";
-import { IProductEntity, IProductSearchFilter, ProductCreatePayload } from "../../types";
+import { IProductSearchFilter, ProductCreatePayload } from "../../types";
 import { v4 as uuidv4 } from 'uuid';
+import { param, validationResult } from "express-validator";
 import { INSERT_IMAGE_QUERY, INSERT_IMAGES_QUERY, INSERT_PRODUCT_QUERY, REPLACE_PRODUCT_THUMBNAIL, UPDATE_PRODUCT_FIELDS } from "../services/queries";
 import { IProductNewImages } from "@Shared/types";
 
@@ -130,8 +131,15 @@ productsRouter.post('/new-image', async (req: Request<{}, {}, IProductNewImages>
     }
     
 });
-productsRouter.post('/update-thumbnail', async (req: Request, res: Response) =>{
+productsRouter.post('/update-thumbnail/:id', [param('id').isUUID().withMessage('Comment id is not UUID')], async (req: Request, res: Response) =>{
     try{
+        const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			res.status(400);
+			res.json({ errors: errors.array() });
+			return;
+		}
+
         const info = await client.query(REPLACE_PRODUCT_THUMBNAIL, req.body)
 
         if (info.rows.affectedRows === 0) {
