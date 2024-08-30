@@ -1,11 +1,21 @@
 import axios from "axios";
 import { IProduct, IProductEditData, IProductFilterPayload } from "@Shared/types";
 import { API_HOST as host } from "./const";
+
 export async function getProducts() {
     const { data } = await axios.get < IProduct[] > (`${host}/products`);
     return data || [];
 }
 export async function searchProducts(
+    filter: IProductFilterPayload
+): Promise<IProduct[]> {
+    const { data } = await axios.get < IProduct[] > (
+        `${host}/products/search`,
+        { params: filter }
+    );
+    return data || [];
+} 
+export async function addProduct(
     filter: IProductFilterPayload
 ): Promise<IProduct[]> {
     const { data } = await axios.get < IProduct[] > (
@@ -81,6 +91,17 @@ export async function updateProduct(
             price: Number(formData.price)
         });
         return currentProduct;
+    } catch (e) {
+        console.log(e);
+    }
+}
+export async function newProduct(
+    title: string,
+    description: string,
+    price: number
+){
+    try {
+        await axios.post(`${host}/products`, [title, description, price]);
     } catch (e) {
         console.log(e);
     }

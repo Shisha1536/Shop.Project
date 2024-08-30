@@ -1,0 +1,18 @@
+<form class="products-search" action="new-product" method="post">
+    <div>
+        <label>Titel</label>
+        <input name="title" type="text" required>
+    </div>
+    <div>
+        <label>Discription</label>
+        <input name="discription" type="text">
+    </div>
+    <div>
+        <label>Price</label>
+        <input type="number" name="price" required  >
+    </div>
+    <div class="block-addproduct-btn">
+        <button class="addproduct-add">Добавить</button>
+        <a class="addproduct-reset" href="<%= `/${process.env.ADMIN_PATH}/add-product` %>">Сброс</a>
+    </div>
+</form>

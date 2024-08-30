@@ -9,9 +9,7 @@ export function initServer(): Express {
     const jsonMiddleware = express.json();
     app.use(jsonMiddleware);
 
-    app.listen(port, host, () => {
-        console.log(`Server running on port ${port}`);
-    });
+    app.listen(port, host);
 
     return app;
 }

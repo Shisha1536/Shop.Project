@@ -100,17 +100,15 @@ productsRouter.get('/:id', async (req: Request, res: Response) => {
 });
 productsRouter.post('/', async (req: Request<{}, {}, ProductCreatePayload>, res: Response) => {
     try {
-        const { title, description, price, images } = req.body;
+        const title  = req.body[0];
+        const description = req.body[1];
+        const price = req.body[2];
         const id = uuidv4();
         await client.query(
             INSERT_PRODUCT_QUERY,
             [id, title || null, description || null, price || null]
         );
-        if (images.length) {
-            let queryIMG = queryImg(INSERT_IMAGES_QUERY, images, id);
-            await client.query(queryIMG)
-        }
-
+        
         res.status(201);
         res.send(`Product id:${id} has been added!`);
     } catch (e) {
